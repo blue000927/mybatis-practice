@@ -10,3 +10,8 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     map-underscore-to-camel-case: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus
