@@ -22,8 +22,8 @@ public class PersonService {
 
   @Transactional
   public PersonResponse createPerson(Person person) {
-    int id = personMapper.create(person);
-    Person foundPerson = personMapper.find((long) id);
+    personMapper.create(person);
+    Person foundPerson = personMapper.find(person.id());
     return PersonResponse.from(foundPerson);
   }
 }
