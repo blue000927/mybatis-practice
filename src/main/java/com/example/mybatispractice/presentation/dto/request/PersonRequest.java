@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class PersonRequest {
 
-    private Long id;
+    private String id;
     private String name;
     private int age;
     private String address;

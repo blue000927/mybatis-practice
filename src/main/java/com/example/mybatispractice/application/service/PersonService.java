@@ -15,7 +15,7 @@ public class PersonService {
     this.personMapper = personMapper;
   }
 
-  public PersonResponse viewPerson(Long id) {
+  public PersonResponse viewPerson(String id) {
     Person person = personMapper.find(id);
     return PersonResponse.from(person);
   }

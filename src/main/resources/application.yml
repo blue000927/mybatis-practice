@@ -2,10 +2,10 @@ server:
   port: 8181
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useSSL=false
+    url: jdbc:mysql://localhost:3306/example?allowPublicKeyRetrieval=true&useSSL=false
     driverClassName: com.mysql.cj.jdbc.Driver
     username: root
-    password: password
+    password: root
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:

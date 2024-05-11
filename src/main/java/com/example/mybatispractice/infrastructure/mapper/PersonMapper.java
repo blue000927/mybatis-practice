@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 public interface PersonMapper {
 
   // @Select(SELECT * FROM person WHERE id = #{id}") 으로 작성 가능. (보통 복잡한 쿼리만 xml 작성)
-  Person find(Long id);
+  Person find(String id);
 
   int create(Person person);
 }

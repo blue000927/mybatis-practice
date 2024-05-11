@@ -21,7 +21,7 @@ public class PersonController {
   }
 
   @GetMapping("/{id}")
-  public PersonResponse viewPerson(@PathVariable("id") Long id) {
+  public PersonResponse viewPerson(@PathVariable("id") String id) {
     return personService.viewPerson(id);
   }
 
