@@ -2,6 +2,14 @@ version: '3.7'
 services:
   spring:
     container_name: spring
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+        reservations:
+          cpus: '1.0'
+          memory: 1024M
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,6 +20,14 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1024M
+        reservations:
+          cpus: '1.0'
+          memory: 1024M
     restart: always
     ports:
       - "3306:3306"
