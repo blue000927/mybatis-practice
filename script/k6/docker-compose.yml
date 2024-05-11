@@ -1,0 +1,11 @@
+version: '3.7'
+
+services:
+  k6:
+    image: grafana/k6:latest
+    ports:
+      - "6565:6565"
+    volumes:
+      - ./script.js:/script.js
+    command: run /script.js
+    network_mode: host
