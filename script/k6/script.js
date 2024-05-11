@@ -3,8 +3,8 @@ import { check } from 'k6';
 import { randomIntBetween, randomString } from "https://jslib.k6.io/k6-utils/1.1.0/index.js";
 
 export let options = {
-    vus: 10, // 가상 사용자 수
-    duration: '1m', // 테스트 지속 시간
+    vus: 300, // 가상 사용자 수
+    duration: '10m', // 테스트 지속 시간
 };
 
 export default function () {
