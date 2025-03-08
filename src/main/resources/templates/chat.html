@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>웹소켓 채팅 테스트</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <style>
+        .chat-container {
+            width: 600px;
+            margin: 20px auto;
+        }
+        #messageArea {
+            width: 100%;
+            height: 300px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+            padding: 10px;
+            overflow-y: auto;
+        }
+        .input-group {
+            margin-bottom: 10px;
+        }
+        .input-group input {
+            width: 200px;
+            padding: 5px;
+            margin-right: 10px;
+        }
+        .error {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>웹소켓 채팅 테스트</h2>
+        
+        <div class="input-group">
+            <input type="text" id="senderId" placeholder="보내는 사람 ID">
+            <input type="text" id="groupId" placeholder="그룹 ID">
+            <button onclick="connect()">연결</button>
+            <button onclick="disconnect()">연결 해제</button>
+        </div>
+
+        <div id="messageArea"></div>
+
+        <div class="input-group">
+            <input type="text" id="message" placeholder="메시지를 입력하세요">
+            <button onclick="sendMessage()">전송</button>
+        </div>
+    </div>
+
+    <script>
+        let stompClient = null;
+        const messageArea = document.getElementById('messageArea');
+
+        function connect() {
+            const senderId = document.getElementById('senderId').value;
+            const groupId = document.getElementById('groupId').value;
+            
+            if (!senderId || !groupId) {
+                alert('보내는 사람 ID와 그룹 ID를 입력해주세요.');
+                return;
+            }
+
+            const socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            
+            stompClient.connect({}, function(frame) {
+                appendMessage("연결됨: " + frame);
+                
+                // 그룹 채팅 구독
+                stompClient.subscribe('/topic/group/' + groupId, function(message) {
+                    const response = JSON.parse(message.body);
+                    appendMessage(`${response.senderId}: ${response.content}`);
+                });
+
+                // 에러 메시지 구독
+                stompClient.subscribe('/user/queue/errors', function(error) {
+                    const errorData = JSON.parse(error.body);
+                    appendMessage('에러: ' + errorData.errorMessage, true);
+                });
+            }, function(error) {
+                appendMessage("연결 실패: " + error, true);
+            });
+        }
+
+        function disconnect() {
+            if (stompClient !== null) {
+                stompClient.disconnect();
+                appendMessage("연결이 종료되었습니다.");
+            }
+            stompClient = null;
+        }
+
+        function sendMessage() {
+            const senderId = document.getElementById('senderId').value;
+            const groupId = document.getElementById('groupId').value;
+            const messageContent = document.getElementById('message').value;
+
+            if (!stompClient) {
+                alert('먼저 연결을 해주세요.');
+                return;
+            }
+
+            const chatMessage = {
+                senderId: parseInt(senderId),
+                groupId: parseInt(groupId),
+                content: messageContent
+            };
+
+            stompClient.send("/app/chat/message", {}, JSON.stringify(chatMessage));
+            document.getElementById('message').value = '';
+        }
+
+        function appendMessage(message, isError = false) {
+            const messageElement = document.createElement('div');
+            messageElement.textContent = message;
+            if (isError) {
+                messageElement.className = 'error';
+            }
+            messageArea.appendChild(messageElement);
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+    </script>
+</body>
+</html> 
